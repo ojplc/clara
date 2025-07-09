@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.developer.project_clara.databinding.FragmentHomeBinding
@@ -28,11 +28,27 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        setupClickListeners()
+
         return root
+    }
+
+    private fun setupClickListeners() {
+        binding.cardVoiceAssistant.setOnClickListener {
+            Toast.makeText(context, "Assistente de Voz - Em breve!", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.cardConversation.setOnClickListener {
+            Toast.makeText(context, "Conversação - Em breve!", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.cardStudyMethod.setOnClickListener {
+            Toast.makeText(context, "Método de Estudo - Em breve!", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.cardChat.setOnClickListener {
+            Toast.makeText(context, "Chat - Em breve!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {

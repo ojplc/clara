@@ -1,13 +1,8 @@
 package com.example.developer.project_clara.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class HomeViewModel : ViewModel() {
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
+    // ViewModel para a tela principal do Clara
+    // Funcionalidades serão implementadas futuramente
 }

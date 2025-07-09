@@ -1,13 +1,20 @@
 <resources>
-    <string name="app_name">project-clara</string>
+    <string name="app_name">Clara</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Clara</string>
+    <string name="nav_header_subtitle">Seu assistente pessoal</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    
+    <!-- Clara App Strings -->
+    <string name="app_title">Clara</string>
+    <string name="voice_assistant">Assistente de Voz</string>
+    <string name="conversation">Conversação</string>
+    <string name="study_method">Método de Estudo</string>
+    <string name="chat">Chat</string>
 </resources>

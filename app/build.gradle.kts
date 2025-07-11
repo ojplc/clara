@@ -39,7 +39,8 @@ android {
 }
 
 dependencies {
-
+    //google edge ai
+    implementation("com.google.mediapipe:tasks-genai:0.10.24")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

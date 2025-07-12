@@ -72,6 +72,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
         return try {
             val result = llmInference?.generateResponse(prompt)
             Log.i(TAG, "Resposta gerada: $result")
+            _text.postValue("AI Respondeu com: $result")
             result
         } catch (e: Exception) {
             Log.e(TAG, "Erro ao gerar resposta", e)

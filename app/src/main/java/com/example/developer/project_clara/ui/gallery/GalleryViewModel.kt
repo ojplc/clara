@@ -24,7 +24,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     private var llmInference: LlmInference? = null
 
     companion object { // <--- Adicione um companion object para a TAG
-        private const val TAG = "GalleryViewModelDEGUB"
+        private const val TAG = "GalleryViewModelDEBUG"
         private const val MODEL_FILENAME = "gemma-3n-E2B-it-int4.task"
     }
 

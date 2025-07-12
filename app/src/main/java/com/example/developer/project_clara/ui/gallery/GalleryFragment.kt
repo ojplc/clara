@@ -70,9 +70,7 @@ fun GalleryScreen(viewModel: GalleryViewModel) {
                 scope.launch {
                     isLoading = true
                     val response = viewModel.generateResponse("Responda apenas com uma palavra aleatória")
-                    response?.let {
-                        // A resposta já atualiza o LiveData no ViewModel
-                    }
+                    // A resposta já atualiza o LiveData no ViewModel
                     isLoading = false
                 }
             },

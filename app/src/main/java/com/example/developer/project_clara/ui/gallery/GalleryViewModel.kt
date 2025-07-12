@@ -12,6 +12,7 @@ import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.google.mediapipe.tasks.genai.llminference.LlmInference.LlmInferenceOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 class GalleryViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,35 +25,58 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
 
     companion object { // <--- Adicione um companion object para a TAG
         private const val TAG = "GalleryViewModelDEGUB"
+        private const val MODEL_FILENAME = "gemma-3n-E2B-it-int4.task"
     }
 
     init {
         viewModelScope.launch(Dispatchers.IO) { // Inicialize em uma coroutine para não bloquear a thread principal
             try {
                 setupLlm(application.applicationContext)
+                _text.postValue("LLM inicializado com sucesso!")
             } catch (e: Exception) {
                 // Trate exceções, por exemplo, modelo não encontrado
-                _text.postValue("Erro ao inicializar o LLM: ${e.message}")
+                _text.postValue("Deu erro ao inicializar o LLM BB: ${e.message}")
             }
         }
     }
 
     private fun setupLlm(context: Context) {
+        val externalDir = File(context.getExternalFilesDir(null), "models")
+        if (!externalDir.exists()) {
+            externalDir.mkdirs()
+        }
+
+        val modelFile = File(externalDir, MODEL_FILENAME)
+        val modelPath = modelFile.absolutePath
+
+        // Verificar se o arquivo existe
+        if (!modelFile.exists()) {
+            throw Exception("Arquivo do modelo não encontrado em: $modelPath")
+        }
+
+        Log.i(TAG, "Modelo encontrado em: $modelPath")
+        Log.i(TAG, "Tamanho do arquivo: ${modelFile.length()} bytes")
+
         // Set the configuration options for the LLM Inference task
         val taskOptions = LlmInferenceOptions.builder()
-            .setModelPath("/data/local/tmp/llm/gemma-3n-E2B-it-int4.task") // CUIDADO: Este caminho é para depuração. Para produção, use assets.
+            .setModelPath(modelPath) // CUIDADO: Este caminho é para depuração. Para produção, use assets.
             .setMaxTopK(64)
             .build()
 
         // Create an instance of the LLM Inference task
         llmInference = LlmInference.createFromOptions(context, taskOptions)
+        Log.i(TAG, "LLM Inference criado com sucesso")
     }
 
     fun generateResponse(prompt: String): String? {
-        val result = llmInference?.generateResponse(prompt)
-        Log.i(TAG, "Result: $result")
-        return result
-
+        return try {
+            val result = llmInference?.generateResponse(prompt)
+            Log.i(TAG, "Resposta gerada: $result")
+            result
+        } catch (e: Exception) {
+            Log.e(TAG, "Erro ao gerar resposta", e)
+            null
+        }
     }
 
     override fun onCleared() {

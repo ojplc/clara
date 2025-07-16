@@ -28,8 +28,9 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val factory = GalleryViewModelFactory(requireActivity().application)
         galleryViewModel =
-            ViewModelProvider(this)[GalleryViewModel::class.java]
+            ViewModelProvider(this, factory)[GalleryViewModel::class.java]
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -69,7 +70,7 @@ fun GalleryScreen(viewModel: GalleryViewModel) {
             onClick = {
                 scope.launch {
                     isLoading = true
-                    val response = viewModel.generateResponse("Responda apenas com uma palavra aleatória")
+                    val response = viewModel.generateResponse("Responda com apenas 5 palavras aleatórias")
                     // A resposta já atualiza o LiveData no ViewModel
                     isLoading = false
                 }

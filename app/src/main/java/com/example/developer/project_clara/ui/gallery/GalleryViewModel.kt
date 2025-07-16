@@ -1,46 +1,51 @@
 package com.example.developer.project_clara.ui.gallery
 
-import android.app.Application // Ou injetar Context de outra forma
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope // Para coroutines
+import androidx.lifecycle.viewModelScope
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import com.google.mediapipe.tasks.genai.llminference.LlmInference.LlmInferenceOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class GalleryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is gallery Fragment"
+        value = "Inicializando LLM..."
     }
     val text: LiveData<String> = _text
 
     private var llmInference: LlmInference? = null
+    private var isInitialized = false
 
-    companion object { // <--- Adicione um companion object para a TAG
+    companion object {
         private const val TAG = "GalleryViewModelDEBUG"
         private const val MODEL_FILENAME = "gemma-3n-E2B-it-int4.task"
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) { // Inicialize em uma coroutine para não bloquear a thread principal
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 setupLlm(application.applicationContext)
-                _text.postValue("LLM inicializado com sucesso!")
+                isInitialized = true
+                withContext(Dispatchers.Main) {
+                    _text.value = "LLM inicializado com sucesso!"
+                }
             } catch (e: Exception) {
-                // Trate exceções, por exemplo, modelo não encontrado
-                _text.postValue("Deu erro ao inicializar o LLM BB: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    _text.value = "Erro ao inicializar o LLM: ${e.message}"
+                }
             }
         }
     }
 
-    private fun setupLlm(context: Context) {
+    private suspend fun setupLlm(context: Context) = withContext(Dispatchers.IO) {
         val externalDir = File(context.getExternalFilesDir(null), "models")
         if (!externalDir.exists()) {
             externalDir.mkdirs()
@@ -49,7 +54,6 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
         val modelFile = File(externalDir, MODEL_FILENAME)
         val modelPath = modelFile.absolutePath
 
-        // Verificar se o arquivo existe
         if (!modelFile.exists()) {
             throw Exception("Arquivo do modelo não encontrado em: $modelPath")
         }
@@ -57,31 +61,41 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
         Log.i(TAG, "Modelo encontrado em: $modelPath")
         Log.i(TAG, "Tamanho do arquivo: ${modelFile.length()} bytes")
 
-        // Set the configuration options for the LLM Inference task
         val taskOptions = LlmInferenceOptions.builder()
-            .setModelPath(modelPath) // CUIDADO: Este caminho é para depuração. Para produção, use assets.
+            .setModelPath(modelPath)
             .setMaxTopK(64)
             .build()
 
-        // Create an instance of the LLM Inference task
         llmInference = LlmInference.createFromOptions(context, taskOptions)
         Log.i(TAG, "LLM Inference criado com sucesso")
     }
 
-    fun generateResponse(prompt: String): String? {
-        return try {
+    suspend fun generateResponse(prompt: String): String? = withContext(Dispatchers.IO) {
+        if (!isInitialized) {
+            withContext(Dispatchers.Main) {
+                _text.value = "LLM ainda não foi inicializado"
+            }
+            return@withContext null
+        }
+
+        return@withContext try {
             val result = llmInference?.generateResponse(prompt)
             Log.i(TAG, "Resposta gerada: $result")
-            _text.postValue("AI Respondeu com: $result")
+            withContext(Dispatchers.Main) {
+                _text.value = "AI Respondeu com: $result"
+            }
             result
         } catch (e: Exception) {
             Log.e(TAG, "Erro ao gerar resposta", e)
+            withContext(Dispatchers.Main) {
+                _text.value = "Erro ao gerar resposta: ${e.message}"
+            }
             null
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        llmInference?.close() // Libere recursos quando o ViewModel for destruído
+        llmInference?.close()
     }
 }

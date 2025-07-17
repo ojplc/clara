@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.developer.project_clara.R
 import com.example.developer.project_clara.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -47,7 +49,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.cardChat.setOnClickListener {
-            Toast.makeText(context, "Chat - Em breve!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.nav_chat)
         }
     }
 

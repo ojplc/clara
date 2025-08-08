@@ -1,8 +1,8 @@
 # Project clara
 
-Android app using kotlin that aims to help users study a new language
-Made using LiteRT API to run the models locally
-Uses Gemma 3n Model
+- Android app using kotlin that aims to help users study a new language
+- Made using LiteRT API to run the models locally
+- Uses Gemma 3n Model
 
 
 # Setup

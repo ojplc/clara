@@ -1,5 +1,11 @@
 # Project clara
 
+Android app using kotlin that aims to help users study a new language
+Made using LiteRT API to run the models locally
+Uses Gemma 3n Model
+
+
+# Setup
 1. Build and run the app
 2. Download the gemma-3n-E2B-it-int4.task model on hugging face
 3. Open file explorer and copy model to the path: Android/data/com.example.developer.project_clara/files/models
